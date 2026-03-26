@@ -3,8 +3,7 @@
 > **把任何网站、本地工具、Electron 应用变成能够让 AI 调用的命令行！**  
 > 零风控 · 复用 Chrome 登录 · AI 自动发现接口 · 全能 CLI 枢纽
 
-[English](./README.md)
-
+[![English](https://img.shields.io/badge/docs-English-1D4ED8?style=flat-square)](./README.md)
 [![npm](https://img.shields.io/npm/v/@jackwener/opencli?style=flat-square)](https://www.npmjs.com/package/@jackwener/opencli)
 [![Node.js Version](https://img.shields.io/node/v/@jackwener/opencli?style=flat-square)](https://nodejs.org)
 [![License](https://img.shields.io/npm/l/@jackwener/opencli?style=flat-square)](./LICENSE)
@@ -20,33 +19,35 @@ CLI all electron！现在支持把所有 electron 应用 CLI 化，从而组合�
 
 ---
 
-## 目录
-
-- [亮点](#亮点)
-- [前置要求](#前置要求)
-- [快速开始](#快速开始)
-- [内置命令](#内置命令)
-  - [桌面应用适配器](#桌面应用适配器)
-- [外部 CLI 枢纽](#外部-cli-枢纽)
-- [下载支持](#下载支持)
-- [输出格式](#输出格式)
-- [致 AI Agent（开发者指南）](#致-ai-agent开发者指南)
-- [远程 Chrome（服务器/无头环境）](#远程-chrome服务器无头环境)
-- [常见问题排查](#常见问题排查)
-- [版本发布](#版本发布)
-- [License](#license)
-
----
-
 ## 亮点
 
 - **CLI All Electron** — 支持把所有 electron 应用（如 Antigravity Ultra）CLI 化，让 AI 控制自己！
 - **多站点覆盖** — 覆盖 B站、知乎、小红书、Twitter、Reddit，以及多种桌面应用
 - **零风控** — 复用 Chrome 登录态，无需存储任何凭证
-- **外部 CLI 枢纽** — 统一发现、自动安装、透传执行 `gh`、`docker`、`kubectl` 等本地 CLI
-- **自修复配置** — `opencli setup` 检查 Browser Bridge 连通性；`opencli doctor` 诊断 daemon、扩展和浏览器连接状态
+- **外部 CLI 枢纽** — 统一发现、自动安装、透传执行 `gh`、`docker` 等本地 CLI
+- **自修复配置** — `opencli doctor` 自动启动 daemon，诊断扩展和浏览器连接状态
 - **AI 原生** — `explore` 自动发现 API，`synthesize` 生成适配器，`cascade` 探测认证策略
 - **动态加载引擎** — 声明式的 `.yaml` 或者底层定制的 `.ts` 适配器，放入 `clis/` 文件夹即可自动注册生效
+
+## 为什么选 opencli？
+
+浏览器自动化工具很多，opencli 适合什么场景？
+
+| 你的需求 | 最佳工具 | 原因 |
+|----------|----------|------|
+| 定时从特定站点提取结构化数据 | **opencli** | 预定义适配器，确定性 JSON 输出，零 LLM 成本 |
+| AI Agent 需要可靠的站点操作 | **opencli** | 数百条命令，结构化输出，快速确定性响应 |
+| 临时探索未知网站 | Browser-Use、Stagehand | LLM 驱动的通用浏览，适合一次性任务 |
+| 大规模网页爬取 | Crawl4AI、Scrapy | 专为吞吐量和规模设计 |
+| 从终端控制桌面 Electron 应用 | **opencli** | CDP + AppleScript，目前唯一能做到这一点的 CLI 工具 |
+
+**opencli 的核心差异：**
+
+- **零 LLM 成本** — 运行时不消耗任何 token，跑一万次不花一分钱
+- **确定性** — 同一命令永远返回同一结构，可管道化、可脚本化、CI 友好
+- **覆盖广泛** — 50+ 站点，横跨全球与中国平台（B站、知乎、小红书、Reddit、HackerNews 等），并支持通过 CDP 控制桌面 Electron 应用
+
+> 与 Browser-Use、Crawl4AI、Firecrawl 等工具的详细对比，请查看 [Comparison Guide](./docs/comparison.md)。
 
 ## 前置要求
 
@@ -62,9 +63,9 @@ OpenCLI 通过轻量化的 **Browser Bridge** Chrome 扩展 + 微型 daemon 与�
 你可以选择以下任一方式安装扩展：
 
 **方式一：下载构建好的安装包（推荐）**
-1. 到 GitHub [Releases 页面](https://github.com/jackwener/opencli/releases) 下载最新的 `opencli-extension.zip` 或 `opencli-extension.crx`。
-2. 打开 Chrome 的 `chrome://extensions`，启用右上角的 **开发者模式**。
-3. 将 `.crx` 拖入浏览器窗口，或将解压后的文件夹拖入即可完成安装。
+1. 到 GitHub [Releases 页面](https://github.com/jackwener/opencli/releases) 下载最新的 `opencli-extension.zip`。
+2. 解压后打开 Chrome 的 `chrome://extensions`，启用右上角的 **开发者模式**。
+3. 点击 **加载已解压的扩展程序**，选择解压后的文件夹。
 
 **方式二：加载源码（针对开发者）**
 1. 同样在 `chrome://extensions` 开启 **开发者模式**。
@@ -75,7 +76,6 @@ OpenCLI 通过轻量化的 **Browser Bridge** Chrome 扩展 + 微型 daemon 与�
 > **Tip**：后续诊断用 `opencli doctor`：
 > ```bash
 > opencli doctor            # 检查扩展和 daemon 连通性
-> opencli doctor --live     # 额外测试浏览器命令
 > ```
 
 ## 快速开始
@@ -120,50 +120,68 @@ npm install -g @jackwener/opencli@latest
 
 | 站点 | 命令 | 模式 |
 |------|------|------|
-| **twitter** | `trending` `bookmarks` `profile` `search` `timeline` `thread` `following` `followers` `notifications` `post` `reply` `delete` `like` `article` `follow` `unfollow` `bookmark` `unbookmark` `download` `accept` `reply-dm` | 浏览器 |
+| **twitter** | `trending` `bookmarks` `profile` `search` `timeline` `thread` `following` `followers` `notifications` `post` `reply` `delete` `like` `article` `follow` `unfollow` `bookmark` `unbookmark` `download` `accept` `reply-dm` `block` `unblock` `hide-reply` | 浏览器 |
 | **reddit** | `hot` `frontpage` `popular` `search` `subreddit` `read` `user` `user-posts` `user-comments` `upvote` `save` `comment` `subscribe` `saved` `upvoted` | 浏览器 |
 | **cursor** | `status` `send` `read` `new` `dump` `composer` `model` `extract-code` `ask` `screenshot` `history` `export` | 桌面端 |
 | **bilibili** | `hot` `search` `me` `favorite` `history` `feed` `subtitle` `dynamic` `ranking` `following` `user-videos` `download` | 浏览器 |
 | **codex** | `status` `send` `read` `new` `dump` `extract-diff` `model` `ask` `screenshot` `history` `export` | 桌面端 |
 | **chatwise** | `status` `new` `send` `read` `ask` `model` `history` `export` `screenshot` | 桌面端 |
+| **doubao** | `status` `new` `send` `read` `ask` | 浏览器 |
+| **doubao-app** | `status` `new` `send` `read` `ask` `screenshot` `dump` | 桌面端 |
 | **notion** | `status` `search` `read` `new` `write` `sidebar` `favorites` `export` | 桌面端 |
 | **discord-app** | `status` `send` `read` `channels` `servers` `search` `members` | 桌面端 |
-| **v2ex** | `hot` `latest` `topic` `daily` `me` `notifications` | 公开 / 浏览器 |
-| **xueqiu** | `feed` `hot-stock` `hot` `search` `stock` `watchlist` | 浏览器 |
-| **antigravity** | `status` `send` `read` `new` `dump` `extract-code` `model` `watch` `serve` | 桌面端 |
-| **chatgpt** | `status` `new` `send` `read` `ask` | 桌面端 |
-| **xiaohongshu** | `search` `notifications` `feed` `user` `download` `creator-notes` `creator-note-detail` `creator-notes-summary` `creator-profile` `creator-stats` | 浏览器 |
+| **v2ex** | `hot` `latest` `topic` `node` `user` `member` `replies` `nodes` `daily` `me` `notifications` | 公开 / 浏览器 |
+| **xueqiu** | `feed` `hot-stock` `hot` `search` `stock` `watchlist` `earnings-date` `fund-holdings` `fund-snapshot` | 浏览器 |
+| **antigravity** | `status` `send` `read` `new` `dump` `extract-code` `model` `watch` | 桌面端 |
+| **chatgpt** | `status` `new` `send` `read` `ask` `model` | 桌面端 |
+| **xiaohongshu** | `search` `notifications` `feed` `user` `download` `publish` `creator-notes` `creator-note-detail` `creator-notes-summary` `creator-profile` `creator-stats` | 浏览器 |
 | **apple-podcasts** | `search` `episodes` `top` | 公开 |
 | **xiaoyuzhou** | `podcast` `podcast-episodes` `episode` | 公开 |
 | **zhihu** | `hot` `search` `question` `download` | 浏览器 |
+| **weixin** | `download` | 浏览器 |
 | **youtube** | `search` `video` `transcript` | 浏览器 |
 | **boss** | `search` `detail` `recommend` `joblist` `greet` `batchgreet` `send` `chatlist` `chatmsg` `invite` `mark` `exchange` `resume` `stats` | 浏览器 |
 | **coupang** | `search` `add-to-cart` | 浏览器 |
 | **bbc** | `news` | 公共 API |
 | **bloomberg** | `main` `markets` `economics` `industries` `tech` `politics` `businessweek` `opinions` `feeds` `news` | 公共 API / 浏览器 |
 | **ctrip** | `search` | 浏览器 |
+| **devto** | `top` `tag` `user` | 公开 |
+| **dictionary** | `search` `synonyms` `examples` | 公开 |
 | **arxiv** | `search` `paper` | 公开 |
-| **wikipedia** | `search` `summary` | 公开 |
-| **hackernews** | `top` | 公共 API |
-| **linkedin** | `search` | 浏览器 |
+| **wikipedia** | `search` `summary` `random` `trending` | 公开 |
+| **hackernews** | `top` `new` `best` `ask` `show` `jobs` `search` `user` | 公共 API |
+| **jd** | `item` | 浏览器 |
+| **linkedin** | `search` `timeline` | 浏览器 |
 | **reuters** | `search` | 浏览器 |
 | **smzdm** | `search` | 浏览器 |
-| **weibo** | `hot` | 浏览器 |
+| **web** | `read` | 浏览器 |
+| **weibo** | `hot` `search` | 浏览器 |
 | **yahoo-finance** | `quote` | 浏览器 |
 | **sinafinance** | `news` | 🌐 公开 |
 | **barchart** | `quote` `options` `greeks` `flow` | 浏览器 |
 | **chaoxing** | `assignments` `exams` | 浏览器 |
-| **grok** | `ask` | 桌面端 |
+| **grok** | `ask` | 浏览器 |
 | **hf** | `top` | 公开 |
 | **jike** | `feed` `search` `create` `like` `comment` `repost` `notifications` `post` `topic` `user` | 浏览器 |
 | **jimeng** | `generate` `history` | 浏览器 |
 | **yollomi** | `generate` `video` `edit` `upload` `models` `remove-bg` `upscale` `face-swap` `restore` `try-on` `background` `object-remover` | 浏览器 |
-| **linux-do** | `hot` `latest` `search` `categories` `category` `topic` | 公开 |
+| **linux-do** | `feed` `categories` `tags` `search` `topic` `user-topics` `user-posts` | 浏览器 |
 | **stackoverflow** | `hot` `search` `bounties` `unanswered` | 公开 |
 | **steam** | `top-sellers` | 公开 |
 | **weread** | `shelf` `search` `book` `highlights` `notes` `notebooks` `ranking` | 浏览器 |
+| **douban** | `search` `top250` `subject` `photos` `download` `marks` `reviews` `movie-hot` `book-hot` | 浏览器 |
+| **facebook** | `feed` `profile` `search` `friends` `groups` `events` `notifications` `memories` `add-friend` `join-group` | 浏览器 |
+| **google** | `news` `search` `suggest` `trends` | 公开 |
+| **36kr** | `news` `hot` `search` `article` | 公开 / 浏览器 |
+| **producthunt** | `posts` `today` `hot` `browse` | 公开 / 浏览器 |
+| **instagram** | `explore` `profile` `search` `user` `followers` `following` `follow` `unfollow` `like` `unlike` `comment` `save` `unsave` `saved` | 浏览器 |
+| **lobsters** | `hot` `newest` `active` `tag` | 公开 |
+| **medium** | `feed` `search` `user` | 浏览器 |
+| **sinablog** | `hot` `search` `article` `user` | 浏览器 |
+| **substack** | `feed` `search` `publication` | 浏览器 |
+| **pixiv** | `ranking` `search` `user` `illusts` `detail` `download` | 浏览器 |
+| **tiktok** | `explore` `search` `profile` `user` `following` `follow` `unfollow` `like` `unlike` `comment` `save` `unsave` `live` `notifications` `friends` | 浏览器 |
 
-> **Bloomberg 说明**：Bloomberg 的 RSS 列表命令（`main`、各栏目 feed、`feeds`）无需浏览器即可使用。`bloomberg news` 适用于当前 Chrome 会话本身就能访问的标准 Bloomberg 文章页。音频页和部分非标准页面可能失败，OpenCLI 也不会绕过 Bloomberg 的付费墙、登录或权限校验。
 
 ### 外部 CLI 枢纽
 
@@ -174,8 +192,8 @@ OpenCLI 也可以作为你现有命令行工具的统一入口，负责发现、
 | **gh** | GitHub CLI | `opencli gh pr list --limit 5` |
 | **obsidian** | Obsidian 仓库管理 | `opencli obsidian search query="AI"` |
 | **docker** | Docker 命令行工具 | `opencli docker ps` |
-| **kubectl** | Kubernetes CLI | `opencli kubectl get pods` |
 | **readwise** | Readwise / Reader CLI | `opencli readwise login` |
+| **gws** | Google Workspace CLI — Docs, Sheets, Drive, Gmail, Calendar | `opencli gws docs list` |
 
 **零配置透传**：OpenCLI 会把你的输入原样转发给底层二进制，保留原生 stdout / stderr 行为。
 
@@ -200,6 +218,7 @@ opencli register mycli
 | **ChatWise** | 多 LLM 客户端（GPT-4、Claude、Gemini） | [Doc](./docs/adapters/desktop/chatwise.md) |
 | **Notion** | 搜索、读取、写入 Notion 页面 | [Doc](./docs/adapters/desktop/notion.md) |
 | **Discord** | Discord 桌面版 — 消息、频道、服务器 | [Doc](./docs/adapters/desktop/discord.md) |
+| **Doubao** | 通过 CDP 控制豆包桌面应用 | [Doc](./docs/adapters/desktop/doubao-app.md) |
 
 ## 下载支持
 
@@ -212,7 +231,10 @@ OpenCLI 支持从各平台下载图片、视频和文章。
 | **小红书** | 图片、视频 | 下载笔记中的所有媒体文件 |
 | **B站** | 视频 | 需要安装 `yt-dlp` |
 | **Twitter/X** | 图片、视频 | 从用户媒体页或单条推文下载 |
+| **Pixiv** | 图片 | 下载原始画质插画，支持多页作品 |
 | **知乎** | 文章（Markdown） | 导出文章，可选下载图片到本地 |
+| **微信公众号** | 文章（Markdown） | 导出微信公众号文章为 Markdown |
+| **豆瓣** | 图片 | 下载电影条目的海报 / 剧照图片 |
 
 ### 前置依赖
 
@@ -229,11 +251,11 @@ brew install yt-dlp
 
 ```bash
 # 下载小红书笔记中的图片/视频
-opencli xiaohongshu download --note-id abc123 --output ./xhs
+opencli xiaohongshu download abc123 --output ./xhs
 
 # 下载B站视频（需要 yt-dlp）
-opencli bilibili download --bvid BV1xxx --output ./bilibili
-opencli bilibili download --bvid BV1xxx --quality 1080p  # 指定画质
+opencli bilibili download BV1xxx --output ./bilibili
+opencli bilibili download BV1xxx --quality 1080p  # 指定画质
 
 # 下载 Twitter 用户的媒体
 opencli twitter download elonmusk --limit 20 --output ./twitter
@@ -241,27 +263,20 @@ opencli twitter download elonmusk --limit 20 --output ./twitter
 # 下载单条推文的媒体
 opencli twitter download --tweet-url "https://x.com/user/status/123" --output ./twitter
 
+# 下载豆瓣电影海报 / 剧照
+opencli douban download 30382501 --output ./douban
+
 # 导出知乎文章为 Markdown
 opencli zhihu download "https://zhuanlan.zhihu.com/p/xxx" --output ./zhihu
 
 # 导出并下载图片
 opencli zhihu download "https://zhuanlan.zhihu.com/p/xxx" --download-images
+
+# 导出微信公众号文章为 Markdown
+opencli weixin download --url "https://mp.weixin.qq.com/s/xxx" --output ./weixin
 ```
 
-### Pipeline Step（用于 YAML 适配器）
 
-`download` step 可以在 YAML 管线中使用：
-
-```yaml
-pipeline:
-  - fetch: https://api.example.com/media
-  - download:
-      url: ${{ item.imageUrl }}
-      dir: ./downloads
-      filename: ${{ item.title | sanitize }}.jpg
-      concurrency: 5
-      skip_existing: true
-```
 
 ## 输出格式
 
@@ -277,6 +292,28 @@ opencli bilibili hot -f md      # Markdown
 opencli bilibili hot -f csv     # CSV
 opencli bilibili hot -v         # 详细模式：展示管线执行步骤调试信息
 ```
+
+## 插件
+
+通过社区贡献的插件扩展 OpenCLI。插件使用与内置命令相同的 YAML/TS 格式，启动时自动发现。
+
+```bash
+opencli plugin install github:user/opencli-plugin-my-tool  # 安装
+opencli plugin list                                         # 查看已安装
+opencli plugin update my-tool                               # 更新到最新
+opencli plugin update --all                                 # 更新全部已安装插件
+opencli plugin uninstall my-tool                            # 卸载
+```
+
+当 plugin 的版本被记录到 `~/.opencli/plugins.lock.json` 后，`opencli plugin list` 也会显示对应的短 commit hash。
+
+| 插件 | 类型 | 描述 |
+|------|------|------|
+| [opencli-plugin-github-trending](https://github.com/ByteYue/opencli-plugin-github-trending) | YAML | GitHub Trending 仓库 |
+| [opencli-plugin-hot-digest](https://github.com/ByteYue/opencli-plugin-hot-digest) | TS | 多平台热榜聚合 |
+| [opencli-plugin-juejin](https://github.com/Astro-Han/opencli-plugin-juejin) | YAML | 稀土掘金热门文章 |
+
+详见 [插件指南](./docs/zh/guide/plugins.md) 了解如何创建自己的插件。
 
 ## 致 AI Agent（开发者指南）
 
@@ -306,6 +343,8 @@ opencli cascade https://api.example.com/data
 
 - **"Extension not connected" 报错**
   - 确保你当前的 Chrome 已安装且**开启了** opencli Browser Bridge 扩展（在 `chrome://extensions` 中检查）。
+- **"attach failed: Cannot access a chrome-extension:// URL" 报错**
+  - 其他 Chrome 扩展（如 youmind、New Tab Override 或 AI 助手类扩展）可能产生冲突。请尝试**暂时禁用其他扩展**后重试。
 - **返回空数据，或者报错 "Unauthorized"**
   - Chrome 里的登录态可能已经过期。请打开当前 Chrome 页面，在新标签页重新手工登录或刷新该页面。
 - **Node API 错误 (如 parseArgs, fs 等)**
@@ -314,15 +353,12 @@ opencli cascade https://api.example.com/data
   - 检查 daemon 状态：`curl localhost:19825/status`
   - 查看扩展日志：`curl localhost:19825/logs`
 
-## 版本发布
 
-```bash
-npm version patch   # 0.1.0 → 0.1.1
-npm version minor   # 0.1.0 → 0.2.0
+## Star History
 
-# 推送 tag，GitHub Actions 将自动执行发版和 npm 发布
-git push --follow-tags
-```
+[![Star History Chart](https://api.star-history.com/svg?repos=jackwener/opencli&type=Date)](https://star-history.com/#jackwener/opencli&Date)
+
+
 
 ## License
 

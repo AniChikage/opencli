@@ -66,4 +66,4 @@ The CLI ensures the automation tab is on `yollomi.com` before calling APIs (same
 ## Notes
 
 - **Credits**: Each model consumes account credits; insufficient credits returns HTTP 402.
-- **Upload**: Local paths for tools are not accepted directly — use `yollomi upload` to get a URL, or pass an existing HTTPS image URL.
+- **Upload**: Local paths for tools are not accepted directly — use `yollomi upload` to get a URL, or pass an existing HTTPS image URL. Large videos are capped (~20MB) when uploading through the browser bridge to avoid OOM.

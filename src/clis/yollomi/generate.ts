@@ -11,7 +11,7 @@ import * as path from 'node:path';
 import chalk from 'chalk';
 import { cli, Strategy } from '../../registry.js';
 import { CliError } from '../../errors.js';
-import { YOLLOMI_DOMAIN, yollomiPost, resolveImageInput, downloadOutput, fmtBytes, MODEL_ROUTES } from './utils.js';
+import { YOLLOMI_DOMAIN, yollomiPost, downloadOutput, fmtBytes, MODEL_ROUTES } from './utils.js';
 
 function getDimensions(ratio: string): { width: number; height: number } {
   const map: Record<string, [number, number]> = {
@@ -79,7 +79,8 @@ cli({
         continue;
       }
       try {
-        const ext = url.includes('.png') ? '.png' : '.jpg';
+        const urlPath = (() => { try { return new URL(url).pathname; } catch { return url; } })();
+        const ext = urlPath.endsWith('.png') || urlPath.endsWith('.webp') ? urlPath.slice(urlPath.lastIndexOf('.')) : '.jpg';
         const filename = `yollomi_${modelId}_${Date.now()}_${i + 1}${ext}`;
         const { path: fp, size } = await downloadOutput(url, outputDir, filename);
         results.push({ index: i + 1, status: 'saved', file: path.relative('.', fp), size: fmtBytes(size), url });

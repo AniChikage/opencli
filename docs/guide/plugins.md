@@ -11,6 +11,12 @@ opencli plugin install github:ByteYue/opencli-plugin-github-trending
 # List installed plugins
 opencli plugin list
 
+# Update one plugin
+opencli plugin update github-trending
+
+# Update all installed plugins
+opencli plugin update --all
+
 # Use the plugin (it's just a regular command)
 opencli github-trending repos --limit 10
 
@@ -30,6 +36,10 @@ opencli plugin install https://github.com/user/repo
 ```
 
 The repo name prefix `opencli-plugin-` is automatically stripped for the local directory name. For example, `opencli-plugin-hot-digest` becomes `hot-digest`.
+
+## Version Tracking
+
+OpenCLI records installed plugin versions in `~/.opencli/plugins.lock.json`. Each entry stores the plugin source, current git commit hash, install time, and last update time. `opencli plugin list` shows the short commit hash when version metadata is available.
 
 ## Creating a Plugin
 
@@ -135,6 +145,7 @@ On startup, if both `my-command.ts` and `my-command.js` exist, the `.js` version
 |------|------|-------------|
 | [opencli-plugin-github-trending](https://github.com/ByteYue/opencli-plugin-github-trending) | YAML | GitHub Trending repositories |
 | [opencli-plugin-hot-digest](https://github.com/ByteYue/opencli-plugin-hot-digest) | TS | Multi-platform trending aggregator (zhihu, weibo, bilibili, v2ex, stackoverflow, reddit, linux-do) |
+| [opencli-plugin-juejin](https://github.com/Astro-Han/opencli-plugin-juejin) | YAML | 稀土掘金 (Juejin) hot articles, categories, and article feed |
 
 ## Troubleshooting
 
