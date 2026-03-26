@@ -166,6 +166,7 @@ Run `opencli list` for the live registry.
 | **devto** | `top` `tag` `user` | Public |
 | **dictionary** | `search` `synonyms` `examples` | Public |
 | **arxiv** | `search` `paper` | Public |
+| **paperreview** | `submit` `review` `feedback` | Public |
 | **wikipedia** | `search` `summary` `random` `trending` | Public |
 | **hackernews** | `top` `new` `best` `ask` `show` `jobs` `search` `user` | Public |
 | **jd** | `item` | Browser |
@@ -191,6 +192,7 @@ Run `opencli list` for the live registry.
 | **facebook** | `feed` `profile` `search` `friends` `groups` `events` `notifications` `memories` `add-friend` `join-group` | Browser |
 | **google** | `news` `search` `suggest` `trends` | Public |
 | **36kr** | `news` `hot` `search` `article` | Public / Browser |
+| **imdb** | `search` `title` `top` `trending` `person` `reviews` | Public |
 | **producthunt** | `posts` `today` `hot` `browse` | Public / Browser |
 | **instagram** | `explore` `profile` `search` `user` `followers` `following` `follow` `unfollow` `like` `unlike` `comment` `save` `unsave` `saved` | Browser |
 | **lobsters** | `hot` `newest` `active` `tag` | Public |

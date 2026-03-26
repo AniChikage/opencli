@@ -148,6 +148,7 @@ npm install -g @jackwener/opencli@latest
 | **devto** | `top` `tag` `user` | 公开 |
 | **dictionary** | `search` `synonyms` `examples` | 公开 |
 | **arxiv** | `search` `paper` | 公开 |
+| **paperreview** | `submit` `review` `feedback` | 公开 |
 | **wikipedia** | `search` `summary` `random` `trending` | 公开 |
 | **hackernews** | `top` `new` `best` `ask` `show` `jobs` `search` `user` | 公共 API |
 | **jd** | `item` | 浏览器 |
@@ -173,6 +174,7 @@ npm install -g @jackwener/opencli@latest
 | **facebook** | `feed` `profile` `search` `friends` `groups` `events` `notifications` `memories` `add-friend` `join-group` | 浏览器 |
 | **google** | `news` `search` `suggest` `trends` | 公开 |
 | **36kr** | `news` `hot` `search` `article` | 公开 / 浏览器 |
+| **imdb** | `search` `title` `top` `trending` `person` `reviews` | 公开 |
 | **producthunt** | `posts` `today` `hot` `browse` | 公开 / 浏览器 |
 | **instagram** | `explore` `profile` `search` `user` `followers` `following` `follow` `unfollow` `like` `unlike` `comment` `save` `unsave` `saved` | 浏览器 |
 | **lobsters** | `hot` `newest` `active` `tag` | 公开 |
